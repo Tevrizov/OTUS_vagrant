@@ -1,6 +1,8 @@
 Обновление ядра
+Монтирование  VirtualBox Shared Folders 
 
 
+!!!!!!!!!!!!!!!!!!!!!! Обновление ядра !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 1. Подключаемся по ssh к созданной виртуальной машины:
 для подключения к ВМ вводим vagrant ssh
@@ -161,3 +163,39 @@ Last login: Mon Mar 11 08:14:42 2024 from 10.0.2.2
 стало:
 6.7.9-1.el8.elrepo.x86_64
 
+
+
+!!!!!!!!!!!!!!!!!!!!!! Монтирование  VirtualBox Shared Folders !!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+1. Проблема монтирования связана с тем что  ВМ не умеет работать с vboxsf. 
+проблему можно решить через модули ядра 
+sudo modprobe vboxsf
+но такой модуль не удалось найти.
+
+Для CentOS удалось решить вот так:
+ sudo yum update && sudo yum -y install kernel-headers kernel-devel
+
+
+ep@tep-home:~/tmpvm$ vagrant reload
+==> kernel-update: Attempting graceful shutdown of VM...
+==> kernel-update: Checking if box 'generic/centos8s' version '4.3.4' is up to date...
+==> kernel-update: Clearing any previously set forwarded ports...
+==> kernel-update: Clearing any previously set network interfaces...
+==> kernel-update: Preparing network interfaces based on configuration...
+    kernel-update: Adapter 1: nat
+==> kernel-update: Forwarding ports...
+    kernel-update: 22 (guest) => 2222 (host) (adapter 1)
+==> kernel-update: Running 'pre-boot' VM customizations...
+==> kernel-update: Booting VM...
+==> kernel-update: Waiting for machine to boot. This may take a few minutes...
+    kernel-update: SSH address: 127.0.0.1:2222
+    kernel-update: SSH username: vagrant
+    kernel-update: SSH auth method: private key
+==> kernel-update: Machine booted and ready!
+==> kernel-update: Checking for guest additions in VM...
+==> kernel-update: Setting hostname...
+==> kernel-update: Mounting shared folders...
+    kernel-update: /vagrant => /home/tep/tmpvm
+==> kernel-update: Machine already provisioned. Run `vagrant provision` or use the `--provision`
+==> kernel-update: flag to force provisioning. Provisioners marked to run always will still run.
+tep@tep-home:~/tmpvm$ 
